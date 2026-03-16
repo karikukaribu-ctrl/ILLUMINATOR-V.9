@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <title>ILLUMINATOR</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Yusei+Magic&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="styles.css" />
+  <script async defer src="https://apis.google.com/js/api.js"></script>
+</head>
+
+<body class="theme-automne mode-light">
+  <div class="bg-orbs" aria-hidden="true"></div>
+
+  <!-- Dock flottant -->
+  <div class="floating-dock">
+    <button id="leftPanelToggle" class="dock-btn" aria-label="Ouvrir panneau gauche">≡</button>
+
+    <div class="dock-center">
+      <div class="dock-title">ILLUMINATOR</div>
+      <div class="dock-subtitle">Carte centrale des projets</div>
+    </div>
+
+    <div class="dock-views">
+      <button class="mode-pill is-active" data-view="map">Carte</button>
+      <button class="mode-pill" data-view="day">Jour</button>
+      <button class="mode-pill" data-view="week">Semaine</button>
+      <button class="mode-pill" data-view="month">Mois</button>
+      <button class="mode-pill" data-view="timeline">Timeline</button>
+      <button class="mode-pill" data-view="projects">Projets</button>
+    </div>
+
+    <button id="rightPanelToggle" class="dock-btn" aria-label="Ouvrir panneau droit">⋮</button>
+  </div>
+
+  <div id="panelBackdrop" class="panel-backdrop hidden"></div>
+
+  <!-- Panneau gauche -->
+  <aside id="leftPanel" class="side-panel side-panel-left hidden">
+    <div class="side-panel__head">
+      <div class="panel-title">Capture</div>
+      <button id="leftPanelClose" class="icon-btn">×</button>
+    </div>
+
+    <nav class="side-tabs">
+      <button class="side-tab is-active" data-lefttab="projects">Projets</button>
+      <button class="side-tab" data-lefttab="tasks">Fragments</button>
+      <button class="side-tab" data-lefttab="inbox">Inbox</button>
+    </nav>
+
+    <div class="side-panel__body">
+      <section id="left-projects" class="side-page is-show">
+        <div class="toolbar-row">
+          <button id="newProjectBtn" class="action-btn action-btn--accent">Nouveau projet</button>
+          <button id="expandAllBtn" class="action-btn">Tout ouvrir</button>
+          <button id="collapseAllBtn" class="action-btn">Tout fermer</button>
+        </div>
+        <div id="leftProjectList" class="stack"></div>
+      </section>
+
+      <section id="left-tasks" class="side-page">
+        <div id="leftTaskList" class="stack"></div>
+      </section>
+
+      <section id="left-inbox" class="side-page">
+        <p class="helper">
+          Une ligne = un fragment rapide.<br>
+          Format : <span class="mono">Rédiger intro article - 20</span>
+        </p>
+        <textarea id="inboxText" class="field textarea" rows="10" placeholder="Rédiger intro article - 20&#10;Batterie groove - 15&#10;Plan stage - 25"></textarea>
+        <div class="row">
+          <button id="importInboxBtn" class="action-btn action-btn--accent">Ajouter</button>
+          <button id="clearInboxBtn" class="action-btn">Effacer</button>
+        </div>
+      </section>
+    </div>
+  </aside>
+
+  <!-- Panneau droit -->
+  <aside id="rightPanel" class="side-panel side-panel-right hidden">
+    <div class="side-panel__head">
+      <div class="panel-title">Réglages</div>
+      <button id="rightPanelClose" class="icon-btn">×</button>
+    </div>
+
+    <nav class="side-tabs">
+      <button class="side-tab is-active" data-righttab="prefs">Préférences</button>
+      <button class="side-tab" data-righttab="energy">Énergie</button>
+      <button class="side-tab" data-righttab="calendar">Agenda</button>
+      <button class="side-tab" data-righttab="notes">Notes</button>
+    </nav>
+
+    <div class="side-panel__body">
+      <section id="right-prefs" class="side-page is-show">
+        <div class="field-group">
+          <label class="label-mini" for="seasonSelect">Saison</label>
+          <select id="seasonSelect" class="field select">
+            <option value="automne">Automne</option>
+            <option value="printemps">Printemps</option>
+            <option value="ete">Été</option>
+            <option value="hiver">Hiver</option>
+          </select>
+        </div>
+
+        <div class="field-group">
+          <label class="label-mini" for="themeModeSelect">Mode</label>
+          <select id="themeModeSelect" class="field select">
+            <option value="light">Clair</option>
+            <option value="dark">Sombre</option>
+          </select>
+        </div>
+
+        <div class="field-group">
+          <label class="label-mini" for="focusModeSelect">Focus</label>
+          <select id="focusModeSelect" class="field select">
+            <option value="off">Off</option>
+            <option value="on">On</option>
+          </select>
+        </div>
+
+        <div class="field-group">
+          <label class="label-mini" for="weekTypeSelect">Type de semaine</label>
+          <select id="weekTypeSelect" class="field select">
+            <option value="work">Travail</option>
+            <option value="holiday">Congé</option>
+          </select>
+        </div>
+
+        <div class="field-group">
+          <label class="label-mini" for="energyPeakInput">Pic d’énergie</label>
+          <input id="energyPeakInput" class="field range" type="range" min="6" max="23" step="1">
+        </div>
+
+        <div class="field-group">
+          <label class="label-mini" for="focusDurationInput">Durée focus cible</label>
+          <input id="focusDurationInput" class="field input" type="number" min="10" max="120" step="5">
+        </div>
+
+        <button id="savePrefsBtn" class="action-btn action-btn--accent">Sauver</button>
+      </section>
+
+      <section id="right-energy" class="side-page">
+        <div class="panel-title">Heatmap cognitive</div>
+        <div id="energyHeatmap" class="heatmap"></div>
+        <div id="statsPanel" class="stack mt-12"></div>
+      </section>
+
+      <section id="right-calendar" class="side-page">
+        <p class="helper">Google Calendar peut verrouiller les créneaux existants.</p>
+        <div class="row">
+          <button id="connectGoogleBtn" class="action-btn action-btn--accent">Connecter</button>
+          <button id="importGoogleWeekBtn" class="action-btn">Importer semaine</button>
+        </div>
+        <div id="googleStatus" class="google-status-box">Non connecté.</div>
+      </section>
+
+      <section id="right-notes" class="side-page">
+        <textarea id="globalNotesArea" class="field textarea" rows="12" placeholder="Dépose ici tout ce qui parasite..."></textarea>
+        <div class="row">
+          <button id="saveGlobalNotesBtn" class="action-btn action-btn--accent">Sauver</button>
+        </div>
+      </section>
+    </div>
+  </aside>
+
+  <!-- APP -->
+  <main class="app-shell">
+    <div class="app-shell__inner">
+      <section class="realm-card">
+        <div class="realm-card__top">
+          <div class="mini-status">
+            <span id="selectedDateLabel">—</span>
+            <span id="weekLabel">—</span>
+            <span id="focusLabel">Focus : off</span>
+          </div>
+
+          <div class="row-tight">
+            <button id="autoSuggestBtn" class="action-btn action-btn--accent">Suggestion IA</button>
+            <button id="randomSuggestBtn" class="action-btn">Aléatoire</button>
+          </div>
+        </div>
+
+        <!-- Vues -->
+        <section id="view-map" class="view is-show">
+          <div class="view-section-head">
+            <div class="panel-title">Carte centrale</div>
+            <div class="row-tight">
+              <button id="newStickyBtn" class="action-btn">Post-it</button>
+            </div>
+          </div>
+          <div id="mapBoard" class="map-board"></div>
+        </section>
+
+        <section id="view-day" class="view">
+          <div class="view-section-head">
+            <div class="panel-title">Jour</div>
+            <div id="daySummaryCompact" class="small-muted">—</div>
+          </div>
+          <div id="dayBoard" class="day-board"></div>
+        </section>
+
+        <section id="view-week" class="view">
+          <div class="view-section-head">
+            <div class="panel-title">Semaine</div>
+          </div>
+          <div id="weekBoard" class="week-board"></div>
+        </section>
+
+        <section id="view-month" class="view">
+          <div class="view-section-head">
+            <div class="panel-title">Mois</div>
+          </div>
+          <div id="monthBoard" class="month-board"></div>
+        </section>
+
+        <section id="view-timeline" class="view">
+          <div class="view-section-head">
+            <div class="panel-title">Timeline</div>
+            <div class="row-tight">
+              <button id="generateWeekPlanBtn" class="action-btn action-btn--accent">Générer semaine</button>
+              <button id="newManualBlockBtn" class="action-btn">Bloc libre</button>
+            </div>
+          </div>
+          <div id="timelineContainer" class="timeline-container"></div>
+        </section>
+
+        <section id="view-projects" class="view">
+          <div class="view-section-head">
+            <div class="panel-title">Projets</div>
+          </div>
+          <div id="projectsBoard" class="projects-board"></div>
+        </section>
+
+        <!-- Barre basse -->
+        <div class="bottom-actions">
+          <button class="quick-link" id="openNotesBtn">Notes</button>
+          <button class="quick-link" id="openKiffanceBtn">Kiffance</button>
+          <button class="quick-link" id="openStatsBtn">Stats</button>
+          <button class="quick-link" id="openDetailsBtn">Détails</button>
+          <button class="quick-link" id="openListBtn">Liste</button>
+          <button class="quick-link" id="openSchedulerBtn">Planifier</button>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <!-- Modales -->
+  <div id="modalLayer"></div>
+
+  <script src="config.js"></script>
+  <script src="engine.js"></script>
+  <script src="scheduler.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
